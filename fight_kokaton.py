@@ -144,6 +144,50 @@ class Beam:
         screen.blit(self._img, self._rct)
 
 
+class Beam2:
+    """
+    ビームに関するクラス
+    """
+    def __init__(self, bird: Bird):
+        """
+        割愛
+        """
+        self._img = pg.transform.rotozoom(pg.image.load(f"ex03/fig/beam.png"), -45, 2.0)  # 画像surface
+        self._rct = self._img.get_rect()  # 画像surfaceに対応したrect
+        self._rct.left = bird._rct.right  # こうかとんの右側にビームの左側を合わせる
+        self._rct.centery = bird._rct.centery
+        self._vx, self._vy = +1, +1
+
+    def update(self, screen: pg.Surface):
+        """
+        ビームを速度self._vyに基づき移動させる
+        引数 screen：画面Surface
+        """
+        self._rct.move_ip(self._vx, self._vy)
+        screen.blit(self._img, self._rct)
+
+class Beam3:
+    """
+    ビームに関するクラス
+    """
+    def __init__(self, bird: Bird):
+        """
+        割愛
+        """
+        self._img = pg.transform.rotozoom(pg.image.load(f"ex03/fig/beam.png"), 45, 2.0)  # 画像surface
+        self._rct = self._img.get_rect()  # 画像surfaceに対応したrect
+        self._rct.left = bird._rct.right  # こうかとんの右側にビームの左側を合わせる
+        self._rct.centery = bird._rct.centery
+        self._vx, self._vy = 1, -1
+
+    def update(self, screen: pg.Surface):
+        """
+        ビームを速度self._vyに基づき移動させる
+        引数 screen：画面Surface
+        """
+        self._rct.move_ip(self._vx, self._vy)
+        screen.blit(self._img, self._rct)
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -153,6 +197,9 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
+    beam2 = None
+    beam3 = None
+    
 
     tmr = 0
     while True:
@@ -161,6 +208,8 @@ def main():
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beam = Beam(bird)
+                beam2 = Beam2(bird)
+                beam3 = Beam3(bird)
 
         tmr += 1
         screen.blit(bg_img, [0, 0])
@@ -180,9 +229,13 @@ def main():
 
         if beam is not None:  # ビームが存在しているとき
             beam.update(screen)
+            beam2.update(screen)
+            beam3.update(screen)
             for i, bomb in enumerate(bombs):
-                if beam._rct.colliderect(bomb._rct):
+                if beam._rct.colliderect(bomb._rct) or beam2._rct.colliderect(bomb._rct) or beam3._rct.colliderect(bomb._rct):
                     beam = None
+                    beam2 = None
+                    beam3 = None
                     del bombs[i]
                     bird.change_img(6, screen)
                     break
