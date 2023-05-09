@@ -127,6 +127,16 @@ class Bomb:
         screen.blit(self._img, self._rct)
 
 
+class explosion:
+    def __init__(self, xy: tuple[int, int]):
+        self._rct = self._img.get_rect()
+        self._rct.center = xy
+            
+    def change_img(self, screen: pg.Surface):
+        self._img = pg.image.load(f"ex03/fig/explosion.gif")
+        screen.blit(self._img, self._rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -165,6 +175,7 @@ def main():
             beam.update(screen)
             for i, bomb in enumerate(bombs):
                 if beam._rct.colliderect(bomb._rct):       #ビームと爆弾の衝突判定
+                    explosion.change_img(screen)
                     beam = None
                     del bombs[i]
                     bird.change_img(6, screen)
