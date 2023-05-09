@@ -162,6 +162,9 @@ def main():
             if bomb is not None and beam._rct.colliderect(bomb._rct):       #ビームと爆弾の衝突判定
                 beam = None
                 bomb = None
+                bird.change_img(6, screen)
+                pg.display.update()
+
         pg.display.update()
         clock.tick(1000)
 
